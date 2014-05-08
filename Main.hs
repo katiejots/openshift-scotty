@@ -1,21 +1,30 @@
 {-# LANGUAGE OverloadedStrings #-}
-import Web.Scotty
-import System.Environment
-import Control.Monad
-import Network.Wai.Middleware.RequestLogger
+
+import Data.Conduit.Network()
 import Data.Default (def)
-import Network.Wai.Handler.Warp (settingsPort, settingsHost)
-import Data.Conduit.Network
+import Data.String (fromString)
 
-opts :: String -> Int -> Options
-opts ip port = def { verbose = 0
-                   , settings = (settings def) { settingsHost = Host ip, settingsPort = port }
-               }
+import Network.Wai.Middleware.RequestLogger (logStdoutDev)
+import Network.Wai.Handler.Warp (setHost, setPort, defaultSettings)
 
+import System.Environment (getArgs)
+
+import Web.Scotty (Options(..), scottyOpts, middleware, get, text)
+
+-- | you need to call the server like this:
+--   
+-- >> server 127.0.0.1 8080
 main :: IO ()
 main = do 
-     (ip:port:args) <- getArgs
-     scottyOpts (opts ip $ read port) $ do
+     opts <- commandLineOptions
+     scottyOpts opts $ do
          middleware logStdoutDev
          get "/" $ text "Hello World!"
 
+-- | reads scotty-options from the command-line arguments
+-- expects at least two arguments: first the IP to be used followed by the port
+commandLineOptions :: IO Options
+commandLineOptions = do
+  (ip:port:_) <- getArgs
+  let sets = setPort (read port) . setHost (fromString ip) $ defaultSettings
+  return $ def { verbose = 0, settings = sets }
