@@ -22,13 +22,18 @@ main = do
          middleware logStdoutDev
          middleware $ staticPolicy (noDots >-> addBase "static")
 
-         get "/" $ showIndexPage
+         get "/"      $ showIndexPage
+         get "/about" $ showAboutPage
 
--- | 
 showIndexPage :: ActionM ()
 showIndexPage = do
    setHeader "Content-Type" "text/html"
    file $ "./static/index.html"
+
+showAboutPage :: ActionM ()
+showAboutPage = do
+   setHeader "Content-Type" "text/html"
+   file $ "./static/about.html"
 
 
 -- | reads scotty-options from the command-line arguments
