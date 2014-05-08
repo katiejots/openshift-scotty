@@ -1,0 +1,68 @@
+<!doctype html>  
+<head>  
+  <meta charset="utf-8">  
+  <title>OpenShift-scotty skeleton</title>  
+  <meta name="a basic scotty skeleton to use with OpenShift" 
+        content="to be filled by YOU sir">  
+
+  <link rel="stylesheet" href="css/style.css?v=1">  
+</head>  
+  
+<body>  
+    <div id="wrapper">  
+        <header>  
+            <nav>  
+                <ul>  
+                    <li class="active">
+                        <a rel="external" href="/">Home</a>
+                    </li>  
+                    <li><a rel="external" href="/about">About us</a></li>  
+                </ul>  
+            </nav>  
+        </header>  
+          
+        <div id="content">  
+
+            <h1>Hello OpenShift</h1>  
+
+            <section>
+                <h3>Input some numbers and add them on the server</h3>
+                <p><small>impressive isn't it?</small></p>
+                <p>A <input id="a" type="number" size="20" value="0" ></p>
+                <p>B <input id="b" type="number" size="20" value="0"></p> 
+                <p><button id="add">add</button></p>
+                <p>= <span id="sum">---</p> 
+           </section>
+
+        </div>  
+          
+        <footer>  
+            <p>some kind of footer</p>  
+        </footer>  
+    </div>  
+  
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>  
+    <script>
+
+        function serverAdd() {
+          $("#sum").val('');
+          var data = { 'a': $("#a").val(), 'b' : $("#b").val() };
+          $.post("/api/add", data)
+           .done(function(res){ 
+             if (res) { 
+                $("#sum").text(res.sum); 
+            } else {
+                $("#sum").text("???");
+            }
+           })
+           .fail(function(){
+             alert("error on post");
+           });
+        };
+ 
+        $("#add").click(serverAdd);
+    </script>
+
+</body>  
+
+</html> 

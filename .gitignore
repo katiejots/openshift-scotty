@@ -1,0 +1,12 @@
+*.hi
+*.o
+cabal-dev
+dist
+TAGS
+log
+*.DS_Store
+/haddocks.html
+.cabal-sandbox/
+cabal.sandbox.config
+*.sublime-workspace
+SourceGraph/

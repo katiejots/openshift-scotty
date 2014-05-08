@@ -12,4 +12,7 @@ executable server
                  warp,
                  scotty,
                  data-default,
-                 network-conduit
+                 network-conduit,
+                 conduit-extra,
+                 aeson,
+                 filepath
