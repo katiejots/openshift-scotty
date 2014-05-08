@@ -13,4 +13,5 @@ executable server
                  scotty,
                  data-default,
                  network-conduit,
-                 conduit-extra
+                 conduit-extra,
+                 aeson

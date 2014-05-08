@@ -4,6 +4,7 @@
   <title>OpenShift-scotty skeleton</title>  
   <meta name="a basic scotty skeleton to use with OpenShift" 
         content="to be filled by YOU sir">  
+
   <link rel="stylesheet" href="css/style.css?v=1">  
 </head>  
   
@@ -24,6 +25,13 @@
 
             <h1>Hello OpenShift</h1>  
 
+            <section>
+                <p>A <input id="a" type="number" size="20"></p>
+                <p>B <input id="b" type="number" size="20"></p> 
+                <p><button id="add">add</button></p>
+                <p>= <span id="sum"></p> 
+           </section>
+
         </div>  
           
         <footer>  
@@ -31,5 +39,25 @@
         </footer>  
     </div>  
   
+    <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>  
+    <script>
+
+        function serverAdd() {
+          $("#sum").val('');
+          var data = { 'a': $("#a").val(), 'b' : $("#b").val() };
+          $.post("/api/add", data)
+           .done(function(res){ 
+             if (res) { 
+                $("#sum").val(res.sum); }
+           })
+           .fail(function(){
+             alert("error on post");
+           });
+        };
+ 
+        $("#add").click(serverAdd);
+    </script>
+
 </body>  
+
 </html> 

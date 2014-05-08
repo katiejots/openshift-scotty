@@ -1,5 +1,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+import Control.Applicative ((<$>))
+
+import Data.Aeson((.=), object)
 import Data.Conduit.Network()
 import Data.Default (def)
 import Data.String (fromString)
@@ -10,7 +13,7 @@ import Network.Wai.Handler.Warp (setHost, setPort, defaultSettings)
 
 import System.Environment (getArgs)
 
-import Web.Scotty (Options(..), ActionM, scottyOpts, middleware, setHeader, get, file)
+import Web.Scotty (Options(..), ActionM, scottyOpts, middleware, setHeader, get, file, json, param)
 
 -- | you need to call the server like this:
 --   
@@ -22,8 +25,10 @@ main = do
          middleware logStdoutDev
          middleware $ staticPolicy (noDots >-> addBase "static")
 
-         get "/"      $ showIndexPage
-         get "/about" $ showAboutPage
+         get "/"        $ showIndexPage
+         get "/about"   $ showAboutPage
+
+         get "/api/add" $ addNumbers
 
 showIndexPage :: ActionM ()
 showIndexPage = do
@@ -34,6 +39,17 @@ showAboutPage :: ActionM ()
 showAboutPage = do
    setHeader "Content-Type" "text/html"
    file $ "./static/about.html"
+
+-- | gets two numbers from the request and 
+-- returns a JSON object with the numbers and their sum
+addNumbers :: ActionM ()
+addNumbers = do
+   a <- read <$> param "a"
+   b <- read <$> param "b"
+   let res = a+b :: Int
+   json $ object [ "a"   .= a
+                 , "b"   .= b
+                 , "sum" .= res ]
 
 
 -- | reads scotty-options from the command-line arguments
