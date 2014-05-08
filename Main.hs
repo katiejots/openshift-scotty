@@ -25,10 +25,15 @@ import Web.Scotty (Options(..), ActionM
 main :: IO ()
 main = do 
      opts <- commandLineOptions
-     base <- baseFolder
+
+     -- make sure we are using OpenShift's environment variables
+     -- to get the right paths (if they are avaiable)
+     base <- ( `combine` "src") <$> baseFolder
+     let static = base `combine` "static"
+
      scottyOpts opts $ do
          middleware logStdoutDev
-         middleware $ staticPolicy (noDots >-> addBase (combine base "static"))
+         middleware $ staticPolicy (noDots >-> addBase static)
 
          get  "/"        $ showIndexPage base
          get  "/about"   $ showAboutPage base
@@ -36,14 +41,14 @@ main = do
          post "/api/add" $ addNumbers
 
 showIndexPage :: FilePath -> ActionM ()
-showIndexPage base = do
+showIndexPage static = do
    setHeader "Content-Type" "text/html"
-   file $ combine base "static/index.html"
+   file $ combine static "index.html"
 
 showAboutPage :: FilePath -> ActionM ()
-showAboutPage base = do
+showAboutPage static = do
    setHeader "Content-Type" "text/html"
-   file $ combine base "static/about.html"
+   file $ combine static "about.html"
 
 -- | gets two numbers from the request and 
 -- returns a JSON object with the numbers and their sum
