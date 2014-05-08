@@ -30,13 +30,14 @@ main = do
      -- to get the right paths (if they are avaiable)
      base <- baseFolder
      let static = base `combine` "static"
+     putStrLn $ "serving " ++ static
 
      scottyOpts opts $ do
          middleware logStdoutDev
          middleware $ staticPolicy (noDots >-> addBase static)
 
-         get  "/"        $ showIndexPage base
-         get  "/about"   $ showAboutPage base
+         get  "/"        $ showIndexPage static
+         get  "/about"   $ showAboutPage static
 
          post "/api/add" $ addNumbers
 
