@@ -13,7 +13,10 @@ import Network.Wai.Handler.Warp (setHost, setPort, defaultSettings)
 
 import System.Environment (getArgs)
 
-import Web.Scotty (Options(..), ActionM, scottyOpts, middleware, setHeader, get, file, json, param)
+import Web.Scotty (Options(..), ActionM
+                  , scottyOpts, middleware
+                  , setHeader, get, post, file, json
+                  , param)
 
 -- | you need to call the server like this:
 --   
@@ -25,10 +28,10 @@ main = do
          middleware logStdoutDev
          middleware $ staticPolicy (noDots >-> addBase "static")
 
-         get "/"        $ showIndexPage
-         get "/about"   $ showAboutPage
+         get  "/"        $ showIndexPage
+         get  "/about"   $ showAboutPage
 
-         get "/api/add" $ addNumbers
+         post "/api/add" $ addNumbers
 
 showIndexPage :: ActionM ()
 showIndexPage = do

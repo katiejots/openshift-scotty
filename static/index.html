@@ -26,16 +26,18 @@
             <h1>Hello OpenShift</h1>  
 
             <section>
-                <p>A <input id="a" type="number" size="20"></p>
-                <p>B <input id="b" type="number" size="20"></p> 
+                <h3>Input some numbers and add them on the server</h3>
+                <p><small>impressive isn't it?</small></p>
+                <p>A <input id="a" type="number" size="20" value="0" ></p>
+                <p>B <input id="b" type="number" size="20" value="0"></p> 
                 <p><button id="add">add</button></p>
-                <p>= <span id="sum"></p> 
+                <p>= <span id="sum">---</p> 
            </section>
 
         </div>  
           
         <footer>  
-            <p>Some copyright and legal notices here. Maybe use the © symbol a bit.</p>  
+            <p>some kind of footer</p>  
         </footer>  
     </div>  
   
@@ -48,7 +50,10 @@
           $.post("/api/add", data)
            .done(function(res){ 
              if (res) { 
-                $("#sum").val(res.sum); }
+                $("#sum").text(res.sum); 
+            } else {
+                $("#sum").text("???");
+            }
            })
            .fail(function(){
              alert("error on post");
