@@ -28,7 +28,7 @@ main = do
 
      -- make sure we are using OpenShift's environment variables
      -- to get the right paths (if they are avaiable)
-     base <- ( `combine` "src") <$> baseFolder
+     base <- baseFolder
      let static = base `combine` "static"
 
      scottyOpts opts $ do
