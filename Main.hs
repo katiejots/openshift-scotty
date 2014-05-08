@@ -5,6 +5,7 @@ import Data.Default (def)
 import Data.String (fromString)
 
 import Network.Wai.Middleware.RequestLogger (logStdoutDev)
+import Network.Wai.Middleware.Static (staticPolicy, noDots, addBase, (>->))
 import Network.Wai.Handler.Warp (setHost, setPort, defaultSettings)
 
 import System.Environment (getArgs)
@@ -19,6 +20,7 @@ main = do
      opts <- commandLineOptions
      scottyOpts opts $ do
          middleware logStdoutDev
+         middleware $ staticPolicy (noDots >-> addBase "static")
          get "/" $ text "Hello World!"
 
 -- | reads scotty-options from the command-line arguments
