@@ -14,4 +14,5 @@ executable server
                  data-default,
                  network-conduit,
                  conduit-extra,
-                 aeson
+                 aeson,
+                 filepath

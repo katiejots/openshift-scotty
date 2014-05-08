@@ -11,7 +11,8 @@ import Network.Wai.Middleware.RequestLogger (logStdoutDev)
 import Network.Wai.Middleware.Static (staticPolicy, noDots, addBase, (>->))
 import Network.Wai.Handler.Warp (setHost, setPort, defaultSettings)
 
-import System.Environment (getArgs)
+import System.Environment (getArgs, lookupEnv)
+import System.FilePath (combine)
 
 import Web.Scotty (Options(..), ActionM
                   , scottyOpts, middleware
@@ -24,24 +25,25 @@ import Web.Scotty (Options(..), ActionM
 main :: IO ()
 main = do 
      opts <- commandLineOptions
+     base <- baseFolder
      scottyOpts opts $ do
          middleware logStdoutDev
-         middleware $ staticPolicy (noDots >-> addBase "static")
+         middleware $ staticPolicy (noDots >-> addBase (combine base "static"))
 
-         get  "/"        $ showIndexPage
-         get  "/about"   $ showAboutPage
+         get  "/"        $ showIndexPage base
+         get  "/about"   $ showAboutPage base
 
          post "/api/add" $ addNumbers
 
-showIndexPage :: ActionM ()
-showIndexPage = do
+showIndexPage :: FilePath -> ActionM ()
+showIndexPage base = do
    setHeader "Content-Type" "text/html"
-   file $ "./static/index.html"
+   file $ combine base "static/index.html"
 
-showAboutPage :: ActionM ()
-showAboutPage = do
+showAboutPage :: FilePath -> ActionM ()
+showAboutPage base = do
    setHeader "Content-Type" "text/html"
-   file $ "./static/about.html"
+   file $ combine base "static/about.html"
 
 -- | gets two numbers from the request and 
 -- returns a JSON object with the numbers and their sum
@@ -62,3 +64,11 @@ commandLineOptions = do
   (ip:port:_) <- getArgs
   let sets = setPort (read port) . setHost (fromString ip) $ defaultSettings
   return $ def { verbose = 0, settings = sets }
+
+baseFolder :: IO FilePath
+baseFolder = do
+    maybe "." id <$>  lookupEnv repoDirEnvName
+
+
+repoDirEnvName :: String
+repoDirEnvName = "OPENSHIFT_REPO_DIR"
