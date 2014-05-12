@@ -4,12 +4,13 @@ cabal-version: >= 1.2
 build-type:    Simple
 
 executable server
-  main-is:       Main.hs
-  build-depends: base,
-                 wai,
-                 wai-middleware-static,
-                 wai-extra,
-                 warp,
-                 scotty,
-                 data-default,
-                 network-conduit
+  other-extensions:   OverloadedStrings
+  main-is:            Main.hs
+  build-depends:      base
+                    , wai
+                    , wai-middleware-static
+                    , wai-extra
+                    , warp
+                    , scotty
+                    , data-default
+                    , network-conduit
